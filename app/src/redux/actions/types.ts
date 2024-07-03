@@ -1,0 +1,4 @@
+export const SET_BREAK_LENGTH = "SET_BREAK_LENGTH";
+export const SET_SESSION_LENGTH = "SET_SESSION_LENGTH";
+export const SET_TIMER = "SET_TIMER";
+export const SET_TIMER_STATE = "SET_TIMER_STATE";
