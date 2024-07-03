@@ -12,7 +12,7 @@ function App() {
       <div>
         <img src={pomodoroLogo} className="logo" alt="Vite logo" />
       </div>
-      <h1>25 + 5 Clock</h1>
+      <h1>Pomodoro</h1>
 
       <div className="center-container">
         <div className="column">
