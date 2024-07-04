@@ -3,6 +3,7 @@ import pomodoroLogo from "./assets/pomodoro.png";
 import BreakLength from "./components/BreakLength";
 import SessionLength from "./components/SessionLength";
 import "./App.css";
+import Timer from "./components/Timer";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -25,11 +26,11 @@ function App() {
 
       <div className="card">
         <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
+          <Timer />
         </button>
         <p></p>
       </div>
-      <p className="footer">Designed and Developed by: Anas Mhaish</p>
+      <p className="footer">Designed and Developed by: <a href="https://www.linkedin.com/in/anasmhaish/">Anas Mhaish</a></p>
     </>
   );
 }
