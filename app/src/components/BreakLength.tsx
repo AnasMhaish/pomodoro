@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useDispatch, useSelector } from "react-redux";
 import { setBreakLength } from "../redux/actions/timerAction";
-import { useEffect } from "react";
+import { selectors } from "../redux/reducers";
 
-const BreakLength = () => {
-  const breakLength = useSelector((state: any) => state.breakLength) || 5;
+const BreakLength: React.FC = () => {
+  const breakLength = useSelector(selectors.getBreakLength);
   const dispatch = useDispatch();
 
   const decrease = () => {    
@@ -17,17 +17,13 @@ const BreakLength = () => {
     dispatch(setBreakLength(newBreakLength > 60 ? 60 : newBreakLength));
   };
 
-  useEffect(() => {
-    console.log("breakLength:", breakLength);
-  }, [breakLength]);
-
   return (
     <>
-      <h3>Break Length</h3>
+      <h3 id="break-label">Break Length</h3>
       <div className="center-container">
-        <button onClick={decrease}>-</button>
-        <span className="card">{breakLength}</span>
-        <button onClick={increase}>+</button>
+        <button id="break-decrement" onClick={decrease}>-</button>
+        <span id="break-length" className="card">{breakLength}</span>
+        <button id="break-increment" onClick={increase}>+</button>
       </div>
     </>
   );
