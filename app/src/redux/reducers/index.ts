@@ -1,9 +1,12 @@
 
 import { combineReducers } from "@reduxjs/toolkit";
-import timer from "./timerReducer";
+import timerReducer from "./timerReducer";
+import * as selectors from './selectors'
 
 const appReducer = combineReducers({
-    timer
+    timer: timerReducer
 });
 
 export default appReducer;
+
+export { selectors }
