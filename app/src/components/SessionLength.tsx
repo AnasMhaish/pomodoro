@@ -1,6 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useDispatch, useSelector } from "react-redux";
-import { setSessionLength } from "../redux/actions/timerAction";
+import {
+  setSessionLength,
+  setTimerValueInSeconds,
+} from "../redux/actions/timerAction";
 import { selectors } from "../redux/reducers";
 import { TimerState } from "../redux/types";
 
@@ -10,18 +13,20 @@ const BreakLength: React.FC = () => {
   const dispatch = useDispatch();
 
   const decrease = () => {
-    const newSessionLength = sessionLength - 1;
-    dispatch(setSessionLength(newSessionLength < 15 ? 15 : newSessionLength));
+    const newSessionLength = sessionLength - 1 < 1 ? 1 : sessionLength - 1;
+    dispatch(setSessionLength(newSessionLength));
+    dispatch(setTimerValueInSeconds(newSessionLength * 60));
   };
 
   const increase = () => {
-    const newSessionLength = sessionLength + 1;
-    dispatch(setSessionLength(newSessionLength > 60 ? 60 : newSessionLength));
+    const newSessionLength = sessionLength + 1 > 60 ? 60 : sessionLength + 1;
+    dispatch(setSessionLength(newSessionLength));
+    dispatch(setTimerValueInSeconds(newSessionLength * 60));
   };
 
   const IsControlDisabled = () => {
     return timerState === TimerState.Played;
-  }
+  };
 
   return (
     <>

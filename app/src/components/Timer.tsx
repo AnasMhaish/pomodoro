@@ -1,35 +1,74 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useDispatch, useSelector } from "react-redux";
 import { selectors } from "../redux/reducers";
-import { TimerState } from "../redux/types";
-import { useCallback, useEffect, useState } from "react";
+import { SessionState, TimerState } from "../redux/types";
+import { useEffect, useRef, useState } from "react";
+import {
+  DecrementTimer,
+  reset,
+  setSessionState,
+  setTimerIntervalId,
+  setTimerState,
+  setTimerValueInSeconds,
+} from "../redux/actions/timerAction";
+import {} from "./Timer.css";
 
 const Timer: React.FC = () => {
-  const timerValue = useSelector(selectors.getTimerValue);
+  const timerValueInSeconds = useSelector(selectors.getTimerValue);
   const timerState = useSelector(selectors.getTimerState);
   const sessionLength = useSelector(selectors.getSessionLength);
-  const [intervalId, setIntervalId] = useState<number | undefined>(undefined);
+  const breakLength = useSelector(selectors.getBreakLength);
+  const intervalId = useSelector(selectors.getTimerIntervalId);
+  const sessionState = useSelector(selectors.getSessionState);
+
+  const [timerLabel, setTimerLabel] = useState(sessionState);
+
+  const finishAudio = useRef<HTMLAudioElement>(null);
 
   const dispatch = useDispatch();
 
-  const startTimer = useCallback(() => {
-    dispatch({ type: "SET_TIMER_STATE", payload: TimerState.Played });
-    const intervalId = setInterval(() => {
-      dispatch({ type: "SET_TIMER", payload: timerValue - 1 });
+  const startTimer = () => {
+    clearInterval(intervalId);
+    const newIntervalId = setInterval(() => {
+      dispatch(DecrementTimer());
     }, 1000);
-    setIntervalId(intervalId);
-  }, [dispatch, timerValue]);
+    dispatch(setTimerState(TimerState.Played));
+    dispatch(setTimerIntervalId(newIntervalId));
+  };
 
-  const pauseTimer = useCallback(() => {
-    dispatch({ type: "SET_TIMER_STATE", payload: TimerState.Paused });
+  const pauseTimer = () => {
     clearInterval(intervalId);
-  }, [dispatch, intervalId]);
+    dispatch(setTimerState(TimerState.Paused));
+  };
 
-  const stopTimer = useCallback(() => {
-    dispatch({ type: "SET_TIMER_STATE", payload: TimerState.Stopped });
+  const resetTimerValue = (sessionState: SessionState) => {
+    if (sessionState === SessionState.Session) {
+      dispatch(setTimerValueInSeconds(sessionLength * 60));
+    } else {
+      dispatch(setTimerValueInSeconds(breakLength * 60));
+    }
+  };
+
+  const stopTimer = (sessionState: SessionState) => {
     clearInterval(intervalId);
-    dispatch({ type: "SET_TIMER", payload: sessionLength });
-  }, [dispatch, intervalId, sessionLength]);
+    dispatch(setTimerState(TimerState.Stopped));
+    resetTimerValue(sessionState);
+  };
+
+  const formatTime = (timerInSeconds: number) => {
+    const minutes = Math.floor(timerInSeconds / 60);
+    const seconds = timerInSeconds % 60;
+    return `${minutes < 10 ? "0" + minutes : minutes}:${
+      seconds < 10 ? "0" + seconds : seconds
+    }`;
+  };
+
+  const resetTimer = () => {
+    stopTimer(sessionState);
+    finishAudio.current!.pause();
+    finishAudio.current!.currentTime = 0;
+    dispatch(reset());
+  };
 
   useEffect(() => {
     if (timerState === TimerState.Played) {
@@ -37,18 +76,56 @@ const Timer: React.FC = () => {
     } else if (timerState === TimerState.Paused) {
       pauseTimer();
     } else {
-      stopTimer();
+      stopTimer(sessionState);
     }
-  }, [timerState, pauseTimer, startTimer, stopTimer]);
+  }, []);
+
+  useEffect(() => {
+    if (timerValueInSeconds < 0) {
+      finishAudio.current?.play();
+      const newState =
+        sessionState === SessionState.Session
+          ? SessionState.Break
+          : SessionState.Session;
+      dispatch(setSessionState(newState));
+
+      stopTimer(newState);
+      startTimer();
+    }
+  }, [timerValueInSeconds]);
+
+  useEffect(() => {
+    setTimerLabel(sessionState);
+  }, [sessionState]);
 
   return (
     <>
-      <h3 id="session-label">Session</h3>
-      <div className="center-container">
-        <span id="session-length" className="card">
-          {timerValue}
-        </span>
+      <h3 id="timer-label" >
+        {timerLabel}
+      </h3>
+      <div>
+        <div id="time-left" className="card timer">
+          {formatTime(timerValueInSeconds)}
+        </div>
+        <div className="card">
+          {timerState === TimerState.Played ? (
+            <button id="start_stop" onClick={pauseTimer}>
+              Pause
+            </button>
+          ) : (
+            <button id="start_stop" onClick={startTimer}>
+              Play
+            </button>
+          )}
+          <button id="stop" onClick={() => stopTimer(sessionState)}>
+            Stop
+          </button>
+          <button id="reset" onClick={resetTimer}>
+            Reset
+          </button>
+        </div>
       </div>
+      <audio id="beep" ref={finishAudio} src="bell.mp3" />
     </>
   );
 };
