@@ -1,4 +1,3 @@
-import { useState } from "react";
 import pomodoroLogo from "./assets/pomodoro.png";
 import BreakLength from "./components/BreakLength";
 import SessionLength from "./components/SessionLength";
@@ -6,12 +5,10 @@ import "./App.css";
 import Timer from "./components/Timer";
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
     <>
       <div>
-        <img src={pomodoroLogo} className="logo" alt="Vite logo" />
+        <img src={pomodoroLogo} className="logo" alt="Pomodoro logo" />
       </div>
       <h1>Pomodoro</h1>
 
@@ -24,10 +21,8 @@ function App() {
         </div>
       </div>
 
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
+      <div className="card timer-container">
           <Timer />
-        </button>
         <p></p>
       </div>
       <p className="footer">Designed and Developed by: <a href="https://www.linkedin.com/in/anasmhaish/">Anas Mhaish</a></p>

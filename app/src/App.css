@@ -20,7 +20,7 @@
 
 .card {
   padding: 1em;
-  font-weight: bold;
+  font-weight: bold;  
 }
 
 .footer {
@@ -38,4 +38,10 @@
   margin: 10px;
   width: 150px;
   text-align: center;
+}
+
+.timer-container {
+  justify-content: center;
+  align-items: center;
+  background-color: #1a1a1a;
 }

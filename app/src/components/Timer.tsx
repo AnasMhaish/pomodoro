@@ -21,8 +21,6 @@ const Timer: React.FC = () => {
   const intervalId = useSelector(selectors.getTimerIntervalId);
   const sessionState = useSelector(selectors.getSessionState);
 
-  const [timerLabel, setTimerLabel] = useState(sessionState);
-
   const finishAudio = useRef<HTMLAudioElement>(null);
 
   const dispatch = useDispatch();
@@ -88,20 +86,15 @@ const Timer: React.FC = () => {
           ? SessionState.Break
           : SessionState.Session;
       dispatch(setSessionState(newState));
-
       stopTimer(newState);
       startTimer();
     }
   }, [timerValueInSeconds]);
 
-  useEffect(() => {
-    setTimerLabel(sessionState);
-  }, [sessionState]);
-
   return (
     <>
-      <h3 id="timer-label" >
-        {timerLabel}
+      <h3 id="timer-label">
+        {sessionState === SessionState.Session ? "Session" : "Break"}
       </h3>
       <div>
         <div id="time-left" className="card timer">
