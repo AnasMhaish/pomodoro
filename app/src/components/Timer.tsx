@@ -2,7 +2,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { selectors } from "../redux/reducers";
 import { SessionState, TimerState } from "../redux/types";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import {
   DecrementTimer,
   reset,

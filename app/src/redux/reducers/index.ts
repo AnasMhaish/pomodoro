@@ -9,4 +9,6 @@ const appReducer = combineReducers({
 
 export default appReducer;
 
+export type AppReducerType = ReturnType<typeof appReducer>
+
 export { selectors }
