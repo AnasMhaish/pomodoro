@@ -48,8 +48,7 @@ jobs:
         working-directory: app
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
-        with:
-          name: production-files
+        with:          
           path: ./app/dist
   # Deployment job
   deploy:
@@ -59,11 +58,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: production-files
-          path: ./app/dist
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v3
