@@ -1,4 +1,4 @@
-# App Project
+# Pomodoro
 
 ## Installation
 
